@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import LoadingSpinner from './LoadingSpinner';
-import UploadForm from './uploadform';
+import UploadForm from './UploadForm';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
