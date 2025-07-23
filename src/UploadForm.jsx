@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import './uploadform.css';
+import './UploadForm.css';
 import { UploadCloud, CheckCircle, Sun, Moon } from 'lucide-react';
 import { motion } from 'framer-motion';
 
