@@ -125,7 +125,7 @@ function UploadForm() {
         <p>{file ? file.name : 'Drag & drop an MP4 file or click to browse'}</p>
         <input
           type="file"
-          accept="video/mp4"
+          accept="video/mp4,video/quicktime,video/webm"
           onChange={handleChange}
           id="fileInput"
           style={{ display: 'none' }}
