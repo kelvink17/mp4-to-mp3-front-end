@@ -39,15 +39,16 @@ if (selected && allowedTypes.includes(selected.type)) {
   setFile(selected);
 }
 }
-{downloadUrl && (
-  <motion.audio
-    controls
-    src={downloadUrl}
-    style={{ marginTop: '1rem', width: '100%' }}
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-  />
-)}
+<a
+  href={downloadUrl}
+  download="converted.mp3"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="download-link"
+>
+  <CheckCircle color="var(--success)" size={20} />
+  Download MP3
+</a>
 
 }
 
