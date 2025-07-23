@@ -31,11 +31,15 @@ function UploadForm() {
     e.preventDefault();
     e.stopPropagation();
     const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile && droppedFile.type === 'video/mp4') {
-      setFile(droppedFile);
-    }
-    dropRef.current.classList.remove('drag-over');
-  };
+    if (droppedFile && allowedTypes.includes(droppedFile.type)) {
+
+const selected = e.target.files[0];
+const allowedTypes = ['video/mp4', 'video/quicktime', 'video/webm'];
+if (selected && allowedTypes.includes(selected.type)) {
+  setFile(selected);
+}
+}
+}
 
   const handleDragOver = (e) => {
     e.preventDefault();
