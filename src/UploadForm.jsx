@@ -66,8 +66,7 @@ function UploadForm() {
     formData.append('video', file);
 
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'https://your-backend-url.onrender.com/convert');
-
+    xhr.open('POST', 'https://mp4-to-mp3-backend-1.onrender.com/convert');
     xhr.responseType = 'blob';
 
     xhr.upload.onprogress = (event) => {
