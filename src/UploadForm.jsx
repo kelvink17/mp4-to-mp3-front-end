@@ -11,7 +11,6 @@ function UploadForm() {
   const [theme, setTheme] = useState('light');
   const dropRef = useRef();
 
-  // Load theme from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('theme');
     if (saved) {
@@ -30,27 +29,17 @@ function UploadForm() {
   const handleDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    dropRef.current.classList.remove('drag-over');
+
     const droppedFile = e.dataTransfer.files[0];
+    const allowedTypes = ['video/mp4', 'video/quicktime', 'video/webm'];
+
     if (droppedFile && allowedTypes.includes(droppedFile.type)) {
-
-const selected = e.target.files[0];
-const allowedTypes = ['video/mp4', 'video/quicktime', 'video/webm'];
-if (selected && allowedTypes.includes(selected.type)) {
-  setFile(selected);
-}
-}
-<a
-  href={downloadUrl}
-  download="converted.mp3"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="download-link"
->
-  <CheckCircle color="var(--success)" size={20} />
-  Download MP3
-</a>
-
-}
+      setFile(droppedFile);
+    } else {
+      alert('Unsupported file type. Please upload MP4, MOV, or WebM.');
+    }
+  };
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -62,55 +51,65 @@ if (selected && allowedTypes.includes(selected.type)) {
     dropRef.current.classList.remove('drag-over');
   };
 
-const handleChange = (e) => {
-  const selected = e.target.files[0];
-  const allowedTypes = ['video/mp4', 'video/quicktime', 'video/webm'];
-  if (selected && allowedTypes.includes(selected.type)) {
-    setFile(selected);
-  } else {
-    alert('Unsupported file type. Please upload MP4, MOV, or WebM.');
-  }
+  const handleChange = (e) => {
+    const selected = e.target.files[0];
+    const allowedTypes = ['video/mp4', 'video/quicktime', 'video/webm'];
+    if (selected && allowedTypes.includes(selected.type)) {
+      setFile(selected);
+    } else {
+      alert('Unsupported file type. Please upload MP4, MOV, or WebM.');
+    }
+  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!file) return;
+
+  setIsConverting(true);
+  setDownloadUrl('');
+  setProgress(0);
+
+  const formData = new FormData();
+  formData.append('video', file); // ✅ Use correct state variable
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', 'https://mp4-to-mp3-backend-1.onrender.com/convert');
+  xhr.responseType = 'blob';
+
+  xhr.upload.onprogress = (event) => {
+    if (event.lengthComputable) {
+      const percent = Math.round((event.loaded / event.total) * 100);
+      setProgress(percent);
+    }
+  };
+
+  xhr.onload = () => {
+    setIsConverting(false);
+    if (xhr.status === 200) {
+      const blob = new Blob([xhr.response], { type: 'audio/mp3' });
+      const url = window.URL.createObjectURL(blob);
+      setDownloadUrl(url); // ✅ update state so download link shows
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'converted.mp3';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } else {
+      alert('Conversion failed.');
+      console.error('❌ Server error:', xhr.status);
+    }
+  };
+
+  xhr.onerror = () => {
+    setIsConverting(false);
+    alert('Upload failed.');
+    console.error('❌ Upload error.');
+  };
+
+  xhr.send(formData);
 };
 
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!file) return;
-
-    setIsConverting(true);
-    setDownloadUrl('');
-    setProgress(0);
-
-    const formData = new FormData();
-    formData.append('video', file);
-
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'https://mp4-to-mp3-backend-1.onrender.com/convert');
-    xhr.responseType = 'blob';
-
-    xhr.upload.onprogress = (event) => {
-      if (event.lengthComputable) {
-        const percent = Math.round((event.loaded / event.total) * 100);
-        setProgress(percent);
-      }
-    };
-
-    xhr.onload = () => {
-      const blob = xhr.response;
-      const url = URL.createObjectURL(blob);
-      setDownloadUrl(url);
-      setIsConverting(false);
-      setProgress(100);
-    };
-
-    xhr.onerror = () => {
-      alert('Something went wrong during the upload.');
-      setIsConverting(false);
-      setProgress(0);
-    };
-
-    xhr.send(formData);
-  };
 
   return (
     <motion.form
@@ -166,7 +165,7 @@ const handleChange = (e) => {
       {downloadUrl && (
         <motion.a
           href={downloadUrl}
-          download="output.mp3"
+          download="converted.mp3"
           className="download-link"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
