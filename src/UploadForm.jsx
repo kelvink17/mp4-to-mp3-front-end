@@ -39,6 +39,16 @@ if (selected && allowedTypes.includes(selected.type)) {
   setFile(selected);
 }
 }
+{downloadUrl && (
+  <motion.audio
+    controls
+    src={downloadUrl}
+    style={{ marginTop: '1rem', width: '100%' }}
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+  />
+)}
+
 }
 
   const handleDragOver = (e) => {
@@ -51,12 +61,16 @@ if (selected && allowedTypes.includes(selected.type)) {
     dropRef.current.classList.remove('drag-over');
   };
 
-  const handleChange = (e) => {
-    const selected = e.target.files[0];
-    if (selected && selected.type === 'video/mp4') {
-      setFile(selected);
-    }
-  };
+const handleChange = (e) => {
+  const selected = e.target.files[0];
+  const allowedTypes = ['video/mp4', 'video/quicktime', 'video/webm'];
+  if (selected && allowedTypes.includes(selected.type)) {
+    setFile(selected);
+  } else {
+    alert('Unsupported file type. Please upload MP4, MOV, or WebM.');
+  }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
