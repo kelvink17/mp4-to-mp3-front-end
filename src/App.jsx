@@ -49,7 +49,7 @@ function App() {
       </section>
 
       <footer className="footer">
-        <p>© 2026 SonicConvert AI. Professional Grade Media Tools.</p>
+        <p>© 2026 VinskiConvert. Professional Grade Media Tools.</p>
       </footer>
     </div>
   );
