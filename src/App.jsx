@@ -89,7 +89,7 @@ function App() {
         </div>
         {/* ------------------------- */}
         
-        <p>© 2025 VinskiConvert. Professional Grade Media Tools.</p>
+        <p>© 2025 VinskiConvert. All rights reserved.</p>
       </footer>
     </div>
   );
